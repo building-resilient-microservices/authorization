@@ -24,20 +24,19 @@ public class SocketIOController {
     private DataListener<Message> onChatReceived() {
         return (senderClient, data, ackSender) -> {
             log.info(data.toString());
-            //sending data to all of the clients, includes yourself
-            senderClient.getNamespace().getBroadcastOperations().sendEvent("get_message", data);
+            senderClient.getNamespace().getBroadcastOperations().sendEvent("get_message_for_".concat(data.acquirerId()), data);
         };
     }
 
     private ConnectListener onConnected() {
         return (client) -> {
-            log.info("Client session ID[{}]  Connected to socket", client.getSessionId().toString());
+            log.info("Client session ID={} - connected to socket controller", client.getSessionId().toString());
         };
     }
 
     private DisconnectListener onDisconnected() {
         return client -> {
-            log.info("Client session [{}] - Disconnected from socket", client.getSessionId().toString());
+            log.info("Client session ID={} - disconnected from socket controller", client.getSessionId().toString());
         };
     }
 

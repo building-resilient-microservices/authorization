@@ -35,7 +35,7 @@ public class SocketIOConfig {
         server.addConnectListener(new ConnectListener() {
             @Override
             public void onConnect(SocketIOClient client) {
-                log.info("new client {} connected to the socket server", client.getSessionId());
+                log.info("new sessionId={} connected to the socket server", client.getSessionId());
             }
         });
 
@@ -43,7 +43,8 @@ public class SocketIOConfig {
             @Override
             public void onDisconnect(SocketIOClient client) {
                 client.getNamespace().getAllClients().stream().forEach(data-> {
-                    log.info("client {} disconnected from socket server", data.getSessionId().toString());});
+                    log.info("sessionId={} disconnected from socket server", data.getSessionId().toString());
+                });
             }
         });
         return server;

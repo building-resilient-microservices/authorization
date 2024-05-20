@@ -20,11 +20,15 @@
 	</modules>
 
 	<properties>
-		<java.version>21</java.version>
+		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -33,11 +37,13 @@
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-tracing-bridge-otel</artifactId>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-datadog</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

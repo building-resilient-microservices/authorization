@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class SocketIOController {
+@Observed
+public class CaptureSocketController {
 
     private final SocketIOServer server;
 
-    public SocketIOController(SocketIOServer server) {
+    public CaptureSocketController(SocketIOServer server) {
         this.server = server;
         server.addConnectListener(onConnected());
         server.addDisconnectListener(onDisconnected());
         server.addEventListener("send_message", Message.class, onData());
     }
 
-    @Observed
     private DataListener<Message> onData() {
         return (senderClient, data, ackSender) -> {
             log.info(data.toString());

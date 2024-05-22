@@ -4,42 +4,40 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
-import com.example.model.Message;
-import io.micrometer.observation.annotation.Observed;
+import com.example.model.TransactionData;
+import com.example.service.CaptureService;
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+
 @Component
 @Slf4j
-@Observed
 public class CaptureSocketController {
 
     private final SocketIOServer server;
+    private final CaptureService captureService;
+    private final ObservationRegistry observationRegistry;
 
-    public CaptureSocketController(SocketIOServer server) {
+    public CaptureSocketController(SocketIOServer server, CaptureService captureService, ObservationRegistry observationRegistry) {
         this.server = server;
-        server.addConnectListener(onConnected());
-        server.addDisconnectListener(onDisconnected());
-        server.addEventListener("send_message", Message.class, onData());
+        this.captureService = captureService;
+        this.observationRegistry = observationRegistry;
+        server.addEventListener("post_data", TransactionData.class, onData());
     }
 
-    private DataListener<Message> onData() {
-        return (senderClient, data, ackSender) -> {
-            log.info(data.toString());
-            senderClient.getNamespace().getBroadcastOperations().sendEvent("get_message_for_".concat(data.acquirerId()), data);
+    private DataListener<TransactionData> onData() {
+        return (senderClient, receivedData, ackSender) -> {
+            Observation.createNotStarted("on_data", this.observationRegistry)
+                    .observe(() ->
+                    {
+                        log.info(receivedData.toString());
+                        var returnData = captureService.initializeTransaction(receivedData);
+                        senderClient.getNamespace().getBroadcastOperations().sendEvent("get_data", returnData);
+                    });
         };
     }
-
-    private ConnectListener onConnected() {
-        return (client) -> {
-            log.info("Client session ID={} - connected to socket controller", client.getSessionId().toString());
-        };
-    }
-
-    private DisconnectListener onDisconnected() {
-        return client -> {
-            log.info("Client session ID={} - disconnected from socket controller", client.getSessionId().toString());
-        };
-    }
-
+    
 }

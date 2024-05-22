@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.model.TransactionData;
 import com.example.service.CaptureService;
 import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,11 @@ public class CaptureRestController {
     public String sleep(@RequestParam long time) {
         TimeUnit.MILLISECONDS.sleep(time);
         return MessageFormat.format("Woke up after {0} milliseconds", time);
+    }
+
+    @PostMapping("/capture")
+    public TransactionData capture(@RequestBody TransactionData transactionData) {
+        return captureService.initializeTransaction(transactionData);
     }
 
 }

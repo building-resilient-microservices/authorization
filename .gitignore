@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/java,intellij+all,eclipse,maven,macos,sonar
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,intellij+all,eclipse,maven,macos,sonar
 
+### Enviromnent sensible data ###
+.env
+
 ### Eclipse ###
 .metadata
 bin/

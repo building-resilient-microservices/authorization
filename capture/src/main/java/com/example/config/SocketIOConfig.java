@@ -32,21 +32,6 @@ public class SocketIOConfig {
         config.setPort(socketPort);
         server = new SocketIOServer(config);
         server.start();
-        server.addConnectListener(new ConnectListener() {
-            @Override
-            public void onConnect(SocketIOClient client) {
-                log.info("new sessionId={} connected to the socket server", client.getSessionId());
-            }
-        });
-
-        server.addDisconnectListener(new DisconnectListener() {
-            @Override
-            public void onDisconnect(SocketIOClient client) {
-                client.getNamespace().getAllClients().stream().forEach(data-> {
-                    log.info("sessionId={} disconnected from socket server", data.getSessionId().toString());
-                });
-            }
-        });
         return server;
     }
 

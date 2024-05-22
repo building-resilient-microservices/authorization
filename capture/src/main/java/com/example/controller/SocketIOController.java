@@ -5,6 +5,7 @@ import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
 import com.example.model.Message;
+import io.micrometer.observation.annotation.Observed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +19,11 @@ public class SocketIOController {
         this.server = server;
         server.addConnectListener(onConnected());
         server.addDisconnectListener(onDisconnected());
-        server.addEventListener("send_message", Message.class, onChatReceived());
+        server.addEventListener("send_message", Message.class, onData());
     }
 
-    private DataListener<Message> onChatReceived() {
+    @Observed
+    private DataListener<Message> onData() {
         return (senderClient, data, ackSender) -> {
             log.info(data.toString());
             senderClient.getNamespace().getBroadcastOperations().sendEvent("get_message_for_".concat(data.acquirerId()), data);

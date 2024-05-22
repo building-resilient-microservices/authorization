@@ -6,3 +6,9 @@ https://www.postman.com/galactic-comet-584601/workspace/public-workspace-demos/c
 ### JMeter WebSocket
 https://www.blazemeter.com/blog/jmeter-websocket-samplers 
 
+### Add the env variables into your ~/.zshrc file or ~/.bashrc file
+```bash
+export DD_API_KEY=<YOUR_DATADOG_API_KEY>
+export DD_APPLICATION_KEY=<YOUR_DATADOG_KEY>
+export DD_SITE=<DD_API_SITE>
+```
